@@ -1,0 +1,59 @@
+Decision Tree Classifier
+Let us start by importing the necessary libraries used to prepare data, generate decision tree and test its accuracy.
+
+import numpy as np 
+
+import pandas as pd
+
+from sklearn.tree import DecisionTreeClassifier
+
+from sklearn import preprocessing
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.metrics import accuracy_score
+
+#Import the data file
+
+data = pd.read_csv("drug200.csv")data.head(5)
+
+#Separate the features or predictors
+
+X = data[['Age','Sex','BP','Cholesterol','Na_to_K']].values
+
+#This is the target variable.This is what the algorithm will be predicting.
+
+Y = data['Drug'].values
+
+#Since the features contain categorical values, encode them to numerical values. Decision trees cannot understand categorical values.
+
+lb_sex = preprocessing.LabelEncoder()lb_sex.fit(['F','M'])X[:,1] = lb_sex.transform(X[:,1])
+lb_bp = preprocessing.LabelEncoder()lb_bp.fit(['LOW','NORMAL','HIGH'])X[:,2] = lb_bp.transform(X[:,2])
+lb_ch = preprocessing.LabelEncoder()lb_ch.fit(['LOW','NORMAL','HIGH'])X[:,3] = lb_ch.transform(X[:,3])
+lb_dg = preprocessing.LabelEncoder()lb_dg.fit(['drugA','drugB','drugC','drugY','drugX'])Y = lb_dg.transform(Y)
+
+#Any ML algorithm would require train and test set - the former is for teaching the machine the relationship between the data and the latter is for testing the model made to check its efficiency.
+
+train_x,test_x,train_y,test_y = train_test_split(X,Y,test_size=0.2)
+
+#Generate a decision tree and fit the features or predictors to it.
+
+dt = DecisionTreeClassifier(criterion="entropy",max_depth=4)dt.fit(train_x,train_y)
+
+#Perform a prediction on the decision tree. The output will be the drugname and the input to the decision tree will be the features like age,sex,cholestrol, BP and Na_to_k value.
+
+pred = dt.predict(test_x)
+
+#Accuracy shows how efficient the decision tree is. In classification, it shows how correctly it can classify elements.
+
+print("Accuracy : ",accuracy_score(test_y,pred))
+
+Sample Input  : 49 F  NORMAL  HIGH  16.275
+
+Sample Output : drugY
+
+The above inputs are taken and converted to label encoding if there is any categorical value. Then it is passed to a decision tree which will predict the drug type depending on what it learnt from the training data. Here an integer will be the output of the decision tree which when converted back to category returns drugY.
+
+dtc-coursera
+
+Decision Tree 
